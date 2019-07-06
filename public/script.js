@@ -2,15 +2,18 @@
 // var dataURL = signature.toDataURL();
 var signature = $("#signature");
 var mousedown = false;
-var pos = { x: 0, y: 0 };
+var pos = {};
 function setPosition(e) {
-    pos.x = e.clientX;
-    pos.y = e.clientY;
+    pos.x = e.clientX - c.canvas.offsetLeft;
+    pos.y = e.clientY - c.canvas.offsetTop;
 }
 var signatureElement = document.getElementById("signature");
 var c = signatureElement.getContext("2d");
 
-console.log(c);
+c.width = 500;
+c.height = 300;
+
+console.log("mouse writing");
 c.strokeStyle = "black";
 c.lineWidth = "2";
 
@@ -19,6 +22,7 @@ signature
         e.preventDefault();
         mousedown = true;
         setPosition(e);
+
         console.log("mouse down");
     })
     .on("touchstart", function() {
@@ -36,14 +40,11 @@ signature
 
 signature.on("mousemove", function(e) {
     if (mousedown) {
-        console.log("mouse writing");
-
         c.beginPath();
         c.moveTo(pos.x, pos.y); // from
         setPosition(e);
         c.lineTo(pos.x, pos.y);
-
+        console.log("position inside mousemove, mousedown: ", pos.x, pos.y);
         c.stroke();
-    } else {
     }
 });

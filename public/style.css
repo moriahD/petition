@@ -1,5 +1,11 @@
 #signature {
-    width: 500px;
-    height: 100px;
     border: 1px dashed #000;
+    background-color: red;
 }
+/* html,
+body,
+div,
+canvas {
+    margin: 0;
+    padding: 0;
+} */
