@@ -10,9 +10,6 @@ function setPosition(e) {
 var signatureElement = document.getElementById("signature");
 var c = signatureElement.getContext("2d");
 
-c.width = 500;
-c.height = 300;
-
 console.log("mouse writing");
 c.strokeStyle = "black";
 c.lineWidth = "2";

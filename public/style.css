@@ -1,11 +1,11 @@
-#signature {
-    border: 1px dashed #000;
-    background-color: red;
+body {
+    margin: 0 auto;
+    text-align: center;
 }
-/* html,
-body,
-div,
-canvas {
-    margin: 0;
-    padding: 0;
-} */
+#signature {
+    border: 1px dashed #ccc;
+    cursor: crosshair;
+}
+input {
+    margin-bottom: 15px;
+}
