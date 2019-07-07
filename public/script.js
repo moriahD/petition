@@ -10,10 +10,6 @@ function setPosition(e) {
 var signatureElement = document.getElementById("signature");
 var c = signatureElement.getContext("2d");
 
-console.log("mouse writing");
-c.strokeStyle = "black";
-c.lineWidth = "2";
-
 signature
     .on("mousedown", function(e) {
         e.preventDefault();
@@ -37,6 +33,8 @@ signature
 
 signature.on("mousemove", function(e) {
     if (mousedown) {
+        c.strokeStyle = "red";
+        c.lineWidth = "2";
         c.beginPath();
         c.moveTo(pos.x, pos.y); // from
         setPosition(e);
@@ -44,4 +42,7 @@ signature.on("mousemove", function(e) {
         console.log("position inside mousemove, mousedown: ", pos.x, pos.y);
         c.stroke();
     }
-});
+}); //drawing signature on canvas
+
+var dataURL = signatureElement.toDataURL("image/jpeg", 1.0);
+console.log("this is dataURL", dataURL);

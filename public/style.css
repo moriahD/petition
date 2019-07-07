@@ -4,6 +4,7 @@ body {
 }
 #signature {
     border: 1px dashed #ccc;
+    background-color: white;
     cursor: crosshair;
 }
 input {
