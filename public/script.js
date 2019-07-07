@@ -41,8 +41,9 @@ signature.on("mousemove", function(e) {
         c.lineTo(pos.x, pos.y);
         console.log("position inside mousemove, mousedown: ", pos.x, pos.y);
         c.stroke();
+        var dataURL = signatureElement.toDataURL();
+        console.log(dataURL);
     }
 }); //drawing signature on canvas
 
-var dataURL = signatureElement.toDataURL("image/jpeg", 1.0);
-console.log("this is dataURL", dataURL);
+//what to do next ?
