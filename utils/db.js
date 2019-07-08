@@ -17,6 +17,9 @@ exports.getNumbers = function getNumbers() {
     return db.query("SELECT COUNT(id) FROM petitionLists ");
 };
 
+exports.getNames = function getNames() {
+    return db.query("SELECT * FROM petitionLists");
+};
 /*
 steps to completing part 1:
 

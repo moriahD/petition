@@ -36,38 +36,35 @@ app.post("/", (req, res) => {
 app.get("/signed", function(req, res) {
     //send method
     var numSigners;
-
-    console.log("a GET /signed happened!");
     db.getNumbers()
         .then(number => {
-            console.log("number of signers: ", number.rows[0].count);
             numSigners = number.rows[0].count;
             res.render("signed", {
                 layout: "main",
                 title: "Thank you for signing our petition",
-                number: numSigners
+                number: numSigners,
+                url: "/signers"
             });
         })
         .catch(err => {
             console.log("err in getting numbers of signers : ", err);
         });
 });
+app.get("/signers", function(req, res) {
+    var signers;
+    db.getNames()
+        .then(results => {
+            signers = results.rows;
+            res.render("signers", {
+                layout: "main",
+                title: "our great signers",
+                names: signers
+            });
+            console.log("this is signers results", signers);
+        })
+        .catch(err => {
+            console.log("err in : ", err);
+        });
+});
 
-// app.get("/cities", (req, res) => {
-//     db.getCities().then(results => {
-//         console.log("results from db.getCities: ", results.rows);
-//     });
-// });
-//
-// app.post("/add-city", (req, res) => {
-//     //we want to add Munich, DE to our cities table
-//     //we'll have to write the query in our db.js file and then we'll run it in the POST /add-city route
-//     db.addCity("Munich", "DE")
-//         .then(() => {
-//             console.log("it worked...");
-//         })
-//         .catch(err => {
-//             console.log("err in addCity: ", err);
-//         });
-// });
 app.listen(8080, () => console.log("i'm listening"));
