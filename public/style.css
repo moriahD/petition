@@ -7,6 +7,9 @@ body {
     background-color: white;
     cursor: crosshair;
 }
+#sig {
+    display: none;
+}
 input {
     margin-bottom: 15px;
 }

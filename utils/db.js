@@ -1,17 +1,20 @@
 var spicedPg = require("spiced-pg");
 
-var db = spicedPg("postgres:moriah:1234@localhost:5432/cities");
+var db = spicedPg("postgres:moriah:1234@localhost:5432/petition");
 
-exports.getCities = function getCities() {
-    return db.query("SELECT * FROM cities");
+exports.getPetitioner = function getPetitioner() {
+    return db.query("SELECT * FROM petitionLists");
 };
 // $1 syntax is used to prevent a type of attack called a SQL Injection!
-exports.addCity = function addCity(city, country) {
+exports.addPetitioner = function addPetitioner(firstName, lastName, signature) {
     return db.query(
-        `INSERT INTO cities (city, country)
-        VALUES ($1, $2)`,
-        [city, country]
+        `INSERT INTO petitionLists (firstName, lastName, signature)
+        VALUES ($1, $2, $3) RETURNING *`,
+        [firstName, lastName, signature]
     );
+};
+exports.getNumbers = function getNumbers() {
+    return db.query("SELECT COUNT(id) FROM petitionLists ");
 };
 
 /*
@@ -53,5 +56,19 @@ Server Routes
 - when user put mouse over the signature field, "toDataURL" is called on the canvas
 - then, send this data to server.
 
+//part 2
+cookies are tiny!
+they can only store about 4000 bytes. (that's 4kb)
+because cookies are so small we can't store the user's signature in a cookie.
+we can store a reference to the sugnature in a cookie. the reference in this case will be the id that was generated when a signature was inserted.
 
+
+create the database once per every project.
+run the create table commands once and every time you change the create table command (let's say you change the name of a column, or add a column, etc.)
+
+every time we make a change to a SQL file, we MUST run "psql nameOfDATAbase -f nameoffile.sql" in bash
+
+every single SELECT, UPDATE, INSERT, and DELETE query will live in this file.
+
+Every single function defined in db.js will be invoked in index.js
 */
