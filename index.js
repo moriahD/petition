@@ -35,21 +35,21 @@ app.post("/", (req, res) => {
 });
 app.get("/signed", function(req, res) {
     //send method
-    var numPetitioners;
-    console.log(numPetitioners);
+    var numSigners;
+
     console.log("a GET /signed happened!");
     db.getNumbers()
         .then(number => {
-            console.log("number of petitioner: ", number.rows[0].count);
-            numPetitioners = number.rows[0].count;
+            console.log("number of signers: ", number.rows[0].count);
+            numSigners = number.rows[0].count;
             res.render("signed", {
                 layout: "main",
                 title: "Thank you for signing our petition",
-                number: numPetitioners
+                number: numSigners
             });
         })
         .catch(err => {
-            console.log("err in getting numbers of petitioners : ", err);
+            console.log("err in getting numbers of signers : ", err);
         });
 });
 
