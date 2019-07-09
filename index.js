@@ -4,6 +4,7 @@ const db = require("./utils/db");
 const hb = require("express-handlebars");
 var cookieSession = require("cookie-session");
 const csurf = require("csurf");
+const bc = require("./utils/bc");
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 app.use("/favicon.ico", (request, response) => response.sendStatus(404));
@@ -39,6 +40,37 @@ app.get("/", function(req, res) {
     }
     res.redirect("/petition");
 });
+app.get("/login", function(req, res) {
+    res.render("login", {
+        title: "Please log in."
+    });
+});
+app.get("/register", function(req, res) {
+    res.render("register", {
+        title:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+    });
+});
+app.post("/register", (req, res) => {
+    bc.hashPassword(req.body.password).then(hashedpw => {
+        db.addUser(
+            req.body.first_name,
+            req.body.last_name,
+            req.body.email,
+            hashedpw
+        )
+            .then(results => {
+                console.log(results);
+                console.log("ciao, i'm here");
+                res.redirect("/petition");
+            })
+            .catch(err => {
+                console.log("err in registering: ", err);
+            });
+    });
+
+    console.log("post is happening");
+});
 app.get("/petition", function(req, res) {
     //send method
     console.log("a GET / happened!");
@@ -49,7 +81,8 @@ app.get("/petition", function(req, res) {
 });
 app.post("/petition", (req, res) => {
     console.log(req.body);
-    db.addPetitioner(req.body.firstName, req.body.lastName, req.body.signature)
+
+    db.addPetitioner(req.body.signature)
         .then(results => {
             req.session.signatureId = results.rows[0].id;
             // console.log("results from db.addPetitioner: ", results.rows);
@@ -62,7 +95,13 @@ app.post("/petition", (req, res) => {
     console.log("post is happening");
 });
 app.get("/thankyou", function(req, res) {
-    //send method
+    if (
+        req.body.first_name == "" ||
+        req.body.last_name == "" ||
+        req.body.signature == ""
+    ) {
+        res.redirect("/petition");
+    }
     db.getImage(req.session.signatureId)
         .then(results => {
             console.log("ciao");
