@@ -82,7 +82,7 @@ app.get("/petition", function(req, res) {
 app.post("/petition", (req, res) => {
     console.log(req.body);
 
-    db.addPetitioner(req.body.signature)
+    db.addSignature(req.body.signature)
         .then(results => {
             req.session.signatureId = results.rows[0].id;
             // console.log("results from db.addPetitioner: ", results.rows);

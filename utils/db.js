@@ -5,15 +5,11 @@ exports.getPetitioner = function getPetitioner() {
     return db.query("SELECT * FROM petitionLists");
 };
 // $1 syntax is used to prevent a type of attack called a SQL Injection!
-exports.addPetitioner = function addPetitioner(
-    first_name,
-    last_name,
-    signature
-) {
+exports.addSignature = function addSignature(signature) {
     return db.query(
-        `INSERT INTO petitionLists (first_name, last_name, signature)
-        VALUES ($1, $2, $3) RETURNING *`,
-        [first_name, last_name, signature]
+        `INSERT INTO petitionLists (signature)
+        VALUES ($1) RETURNING *`,
+        [signature]
     );
 };
 // SIGN UP : add users
