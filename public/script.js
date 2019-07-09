@@ -42,7 +42,7 @@ signature.on("mousemove", function(e) {
         console.log("position inside mousemove, mousedown: ", pos.x, pos.y);
         c.stroke();
         //saving signature as dataURL
-        var dataURL = signatureElement.toDataURL("image/jpeg", 0.5);
+        var dataURL = signatureElement.toDataURL();
         $("#sig").val(dataURL);
     }
 }); //drawing signature on canvas

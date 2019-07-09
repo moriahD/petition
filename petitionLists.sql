@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS petitionLists; --add this
 CREATE TABLE petitionLists(
     id SERIAL PRIMARY KEY,
     firstName VARCHAR(50) NOT NULL,
-    lastName VARCHAR(50),
-    signature TEXT
+    lastName VARCHAR(50) NOT NULL,
+    signature TEXT NOT NULL
 ); --if we don't put semicolon , sql doesn't know when it's done
 
 

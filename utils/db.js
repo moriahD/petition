@@ -20,6 +20,9 @@ exports.getNumbers = function getNumbers() {
 exports.getNames = function getNames() {
     return db.query("SELECT * FROM petitionLists");
 };
+exports.getImage = function(id) {
+    return db.query("SELECT signature FROM petitionLists WHERE id = " + id);
+};
 /*
 steps to completing part 1:
 
@@ -74,4 +77,8 @@ every time we make a change to a SQL file, we MUST run "psql nameOfDATAbase -f n
 every single SELECT, UPDATE, INSERT, and DELETE query will live in this file.
 
 Every single function defined in db.js will be invoked in index.js
+
+<auth>
+inside of util folder, create bc.js for bcrype
+insdie of this file,
 */
