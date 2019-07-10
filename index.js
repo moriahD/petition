@@ -41,8 +41,9 @@ app.use(function(req, res, next) {
 app.get("/", function(req, res) {
     if (req.session.signatureId) {
         res.redirect("/thankyou");
+    } else {
+        res.redirect("/register");
     }
-    res.redirect("/register");
 });
 app.get("/login", function(req, res) {
     res.render("login", {
@@ -96,8 +97,8 @@ app.post("/register", (req, res) => {
             hashedpw
         )
             .then(results => {
-                console.log(results);
-                console.log("ciao, i'm here");
+                req.session.userId = results.rows[0].id;
+                // console.log("ciao, i'm here");
                 res.redirect("/petition");
             })
             .catch(err => {
@@ -118,9 +119,11 @@ app.get("/petition", function(req, res) {
 app.post("/petition", (req, res) => {
     console.log(req.body);
 
-    db.addSignature(req.body.signature)
+    db.addSignature(req.body.signature, req.session.userId)
         .then(results => {
             req.session.signatureId = results.rows[0].id;
+
+            console.log("need to add user id :", results.rows[0].user_id);
             // console.log("results from db.addPetitioner: ", results.rows);
             res.redirect("/thankyou");
         })
