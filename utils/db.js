@@ -34,6 +34,9 @@ exports.getNumbers = function getNumbers() {
 exports.getNames = function getNames() {
     return db.query("SELECT * FROM users");
 };
+exports.getUserId = function(email) {
+    return db.query("SELECT * FROM users WHERE email = $1", [email]);
+};
 exports.getImage = function(id) {
-    return db.query("SELECT signature FROM petitionLists WHERE id = " + id);
+    return db.query("SELECT signature FROM petitionLists WHERE id = $1", [id]);
 };

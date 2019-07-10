@@ -42,20 +42,45 @@ app.get("/", function(req, res) {
     if (req.session.signatureId) {
         res.redirect("/thankyou");
     }
-    res.redirect("/petition");
+    res.redirect("/register");
 });
 app.get("/login", function(req, res) {
-    db.getPetitioner(req.body.email)
-        .then(console.log(req.body.email))
-        .catch();
-
-    // if(){
-    //     //
-    // }
     res.render("login", {
         title: "Please log in."
     });
+    // get info of form
 });
+app.post("/login", function(req, res) {
+    //first check if the user is
+    db.getUserId(req.body.email)
+        .then(result => {
+            if (!result.rows[0]) {
+                res.render("login", {
+                    error: "Your email does not exist!!! Try again."
+                });
+            } else {
+                return result;
+            }
+        })
+        .then(result => {
+            bc.checkPassword(req.body.password, result.rows[0].password)
+
+                .then(results => {
+                    if (!results) {
+                        console.log("password does not match");
+                        res.render("login", {
+                            error: "Your password does not match!!! Try again."
+                        });
+                    } else {
+                        res.redirect("/signers");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        });
+});
+//post request, deal with password
 app.get("/register", function(req, res) {
     res.render("register", {
         title:

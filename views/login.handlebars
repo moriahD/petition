@@ -1,8 +1,9 @@
 
 <form method="POST">
-    <input type="text" name="email" placeholder="Your Email" />
-    <input type="text" name="password" placeholder="Password" />
+    <input type="text" name="email" placeholder="Your Email" required />
+    <input type="password" name="password" placeholder="Password" required/>
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
 <button name="login_btn">LOG IN</button>
 </form>
+<p class="err_login">{{error}}</p>
