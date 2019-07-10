@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+
 const db = require("./utils/db");
 const hb = require("express-handlebars");
 var cookieSession = require("cookie-session");
@@ -41,6 +42,13 @@ app.get("/", function(req, res) {
     res.redirect("/petition");
 });
 app.get("/login", function(req, res) {
+    db.getPetitioner(req.body.email)
+        .then(console.log(req.body.email))
+        .catch();
+
+    // if(){
+    //     //
+    // }
     res.render("login", {
         title: "Please log in."
     });
@@ -95,13 +103,6 @@ app.post("/petition", (req, res) => {
     console.log("post is happening");
 });
 app.get("/thankyou", function(req, res) {
-    if (
-        req.body.first_name == "" ||
-        req.body.last_name == "" ||
-        req.body.signature == ""
-    ) {
-        res.redirect("/petition");
-    }
     db.getImage(req.session.signatureId)
         .then(results => {
             console.log("ciao");
@@ -142,4 +143,4 @@ app.get("/signers", function(req, res) {
         });
 });
 
-app.listen(8080, () => console.log("i'm listening"));
+app.listen(process.env.PORT || 8080, () => console.log("i'm listening"));

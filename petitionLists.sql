@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS petitionLists; --add this
 
 CREATE TABLE petitionLists(
     id SERIAL PRIMARY KEY,
-
+    
     signature TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ); --if we don't put semicolon , sql doesn't know when it's done
