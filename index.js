@@ -18,20 +18,13 @@ app.use(
 app.use(express.static("./public"));
 // this means my app is on heroku and my server should look for a cookieSessionSecret on Heroku
 // this in general is how we handle secret credentials on Heroku
-let secrets;
-if (process.env.PORT) {
-    secrets = process.env.cookieSessionSecret;
-} else {
-    // else will run if running locally
-    secrets = require("./secrets.json");
-}
+
 app.use(
     cookieSession({
-        secret: secrets.cookieSessionSecret,
+        secret: "I'm always angry.",
         maxAge: 1000 * 60 * 60 * 24 * 14
     })
 );
-
 app.use((req, res, next) => {
     if (req.session.signatureId && req.url == "/petition") {
         res.redirect("/thankyou");
@@ -45,7 +38,6 @@ app.use(function(req, res, next) {
     res.locals.csrfToken = req.csrfToken();
     next();
 });
-
 app.get("/", function(req, res) {
     if (req.session.signatureId) {
         res.redirect("/thankyou");
