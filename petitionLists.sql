@@ -10,7 +10,7 @@ CREATE TABLE petitionLists(
 
 
 -- how to enter or insert data into our cities TABLE, we are only defining here
-INSERT INTO petitionLists (signature) VALUES ("signature");
+INSERT INTO petitionLists(signature) VALUES (signature);
 
 -- getting data from a table
 SELECT * FROM petitionLists;

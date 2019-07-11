@@ -45,6 +45,7 @@ app.get("/", function(req, res) {
         res.redirect("/register");
     }
 });
+////////////// LOGIN //////////////
 app.get("/login", function(req, res) {
     res.render("login", {
         title: "Please log in."
@@ -81,7 +82,7 @@ app.post("/login", function(req, res) {
                 });
         });
 });
-//post request, deal with password
+////////////// REGISTER //////////////
 app.get("/register", function(req, res) {
     res.render("register", {
         title:
@@ -99,7 +100,7 @@ app.post("/register", (req, res) => {
             .then(results => {
                 req.session.userId = results.rows[0].id;
                 // console.log("ciao, i'm here");
-                res.redirect("/petition");
+                res.redirect("/profile");
             })
             .catch(err => {
                 console.log("err in registering: ", err);
@@ -108,45 +109,66 @@ app.post("/register", (req, res) => {
 
     console.log("post is happening");
 });
+////////////// USER PROFILE //////////////
+app.get("/profile", (req, res) => {
+    console.log("a GET for profile/ happened!");
+    res.render("profile", {
+        layout: "main",
+        title: "Now please tell us just a little bit more about yourself."
+    });
+});
+app.post("/profile", (req, res) => {
+    db.addProfile(
+        req.body.age,
+        req.body.city,
+        req.body.homepage,
+        req.session.userId
+    )
+        .then(res.redirect("/petition"))
+        .catch(err => {
+            console.log("err in adding petitioner: ", err);
+        });
+
+    console.log("a POST for profile/ happened!");
+});
+
+////////////// SIGN THE PETITION //////////////
 app.get("/petition", function(req, res) {
-    //send method
-    console.log("a GET / happened!");
+    console.log("a GET for petition/ happened!");
     res.render("petition", {
         layout: "main",
         title: "Welcome to this petition page"
     });
 });
 app.post("/petition", (req, res) => {
-    console.log(req.body);
-
     db.addSignature(req.body.signature, req.session.userId)
         .then(results => {
+            console.log("results after adding signature", results);
             req.session.signatureId = results.rows[0].id;
-
-            console.log("need to add user id :", results.rows[0].user_id);
-            // console.log("results from db.addPetitioner: ", results.rows);
             res.redirect("/thankyou");
         })
         .catch(err => {
             console.log("err in adding petitioner: ", err);
         });
 
-    console.log("post is happening");
+    console.log("petition post is happening");
 });
+////////////// THANKYOU PAGE //////////////
 app.get("/thankyou", function(req, res) {
-    db.getImage(req.session.signatureId)
+    db.getSignature(req.session.signatureId)
         .then(results => {
             console.log("ciao");
             var imgUrl;
-            console.log("this is img url: ", results.rows[0].signature);
             imgUrl = results.rows[0].signature;
+            var name;
+            name = results.rows[0].first_name;
             var numSigners;
             db.getNumbers()
                 .then(number => {
                     numSigners = number.rows[0].count;
                     res.render("thankyou", {
                         layout: "main",
-                        title: "Thank you for signing our petition",
+                        name: name,
                         imgUrl: imgUrl,
                         number: numSigners,
                         url: "/signers"
@@ -156,8 +178,11 @@ app.get("/thankyou", function(req, res) {
                     console.log("err in getting numbers of signers : ", err);
                 });
         })
-        .catch();
+        .catch(err => {
+            console.log("err in getting signature img : ", err);
+        });
 });
+////////////// LISTS OF SIGNERS //////////////
 app.get("/signers", function(req, res) {
     var signers;
     db.getNames()
