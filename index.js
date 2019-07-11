@@ -61,6 +61,8 @@ app.post("/login", function(req, res) {
                     error: "Your email does not exist!!! Try again."
                 });
             } else {
+                console.log(result.rows[0].id);
+                req.session.userId = result.rows[0].id;
                 return result;
             }
         })
@@ -70,11 +72,12 @@ app.post("/login", function(req, res) {
                 .then(results => {
                     if (!results) {
                         console.log("password does not match");
+
                         res.render("login", {
                             error: "Your password does not match!!! Try again."
                         });
                     } else {
-                        res.redirect("/signers");
+                        res.redirect("/thankyou");
                     }
                 })
                 .catch(err => {
@@ -155,20 +158,20 @@ app.post("/petition", (req, res) => {
 });
 ////////////// THANKYOU PAGE //////////////
 app.get("/thankyou", function(req, res) {
-    db.getSignature(req.session.signatureId)
+    console.log(req.session.userId);
+    db.getSignature(req.session.userId)
         .then(results => {
-            console.log("ciao");
+            console.log("results of signature", results);
             var imgUrl;
             imgUrl = results.rows[0].signature;
-            var name;
-            name = results.rows[0].first_name;
+
             var numSigners;
             db.getNumbers()
                 .then(number => {
                     numSigners = number.rows[0].count;
                     res.render("thankyou", {
                         layout: "main",
-                        name: name,
+                        // name: name,
                         imgUrl: imgUrl,
                         number: numSigners,
                         url: "/signers"

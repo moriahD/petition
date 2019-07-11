@@ -38,7 +38,9 @@ exports.getUserId = function(email) {
     return db.query("SELECT * FROM users WHERE email = $1", [email]);
 };
 exports.getSignature = function(id) {
-    return db.query("SELECT signature FROM petitionLists WHERE id = $1", [id]);
+    return db.query("SELECT signature FROM petitionLists WHERE user_id = $1", [
+        id
+    ]);
 };
 
 ////PROFILE ////
@@ -48,4 +50,8 @@ exports.addProfile = function addProfile(age, city, url, user_id) {
         VALUES ($1, $2, $3, $4 ) RETURNING *;`,
         [age, city, url, user_id]
     );
+};
+
+exports.getProfile = function getProfile(user_id) {
+    return db.query("SELECT * FROM profile WHERE id = $1", [user_id]);
 };
