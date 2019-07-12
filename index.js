@@ -142,7 +142,7 @@ app.post("/profile", (req, res) => {
     db.addProfile(req.body.age, req.body.city, req.body.url, req.session.userId)
         .then(res.redirect("/petition"))
         .catch(err => {
-            console.log("err in adding petitioner: ", err);
+            console.log("err in adding profile: ", err);
         });
 
     console.log("a POST for profile/ happened!");

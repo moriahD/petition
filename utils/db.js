@@ -48,6 +48,7 @@ exports.getSigByUserId = function(id) {
 ////PROFILE ////
 exports.addProfile = function addProfile(age, city, url, user_id) {
     //i need to check if url is starting with http/https
+    console.log("adding url creating profile", url);
     return db.query(
         `INSERT INTO profile (age, city, url, user_id)
         VALUES ($1, $2, $3, $4 ) RETURNING *;`,
