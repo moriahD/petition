@@ -52,7 +52,13 @@ exports.addProfile = function addProfile(age, city, url, user_id) {
         [age, city, url, user_id]
     );
 };
-
+exports.getSignerName = function getSignerName(user_id) {
+    return db.query(
+        `
+        select * from petitionlists left join users on petitionlists.user_id = users.id WHERE user_id = $1 AND length(signature)>0`,
+        [user_id]
+    );
+};
 exports.getAllProfile = function getProfile() {
     return db.query(
         //i have to join the table

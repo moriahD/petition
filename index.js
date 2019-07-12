@@ -181,13 +181,14 @@ app.post("/petition", (req, res) => {
 });
 ////////////// THANKYOU PAGE //////////////
 app.get("/thankyou", function(req, res) {
-    console.log(req.session.userId);
-    db.getSigByUserId(req.session.userId)
+    console.log("req.session.userId", req.session.userId);
+    console.log("req.session.signatureId", req.session.signatureId);
+    db.getSignerName(req.session.userId)
         .then(results => {
             console.log("results of signature", results);
-            var imgUrl;
-            imgUrl = results.rows[0].signature;
-
+            var imgUrl = results.rows[0].signature;
+            console.log("name", results.rows[0].first_name);
+            var name = results.rows[0].first_name;
             var numSigners;
             db.getAllProfile()
                 .then(results => {
@@ -195,7 +196,7 @@ app.get("/thankyou", function(req, res) {
                     numSigners = results.rowCount;
                     res.render("thankyou", {
                         layout: "main",
-                        // name: name,
+                        name: name,
                         imgUrl: imgUrl,
                         number: numSigners,
                         url: "/signers"
