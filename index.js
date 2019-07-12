@@ -139,12 +139,7 @@ app.get("/profile", (req, res) => {
     });
 });
 app.post("/profile", (req, res) => {
-    db.addProfile(
-        req.body.age,
-        req.body.city,
-        req.body.homepage,
-        req.session.userId
-    )
+    db.addProfile(req.body.age, req.body.city, req.body.url, req.session.userId)
         .then(res.redirect("/petition"))
         .catch(err => {
             console.log("err in adding petitioner: ", err);
@@ -185,10 +180,8 @@ app.get("/thankyou", function(req, res) {
     console.log("req.session.signatureId", req.session.signatureId);
     db.getSignerName(req.session.userId)
         .then(results => {
-            console.log("results of signature", results);
             var imgUrl = results.rows[0].signature;
-            console.log("name", results.rows[0].first_name);
-            var name = results.rows[0].first_name;
+            var first_name = results.rows[0].first_name;
             var numSigners;
             db.getAllProfile()
                 .then(results => {
@@ -196,7 +189,7 @@ app.get("/thankyou", function(req, res) {
                     numSigners = results.rowCount;
                     res.render("thankyou", {
                         layout: "main",
-                        name: name,
+                        first_name: first_name,
                         imgUrl: imgUrl,
                         number: numSigners,
                         url: "/signers"
@@ -216,10 +209,11 @@ app.get("/signers", function(req, res) {
     db.getAllProfile()
         .then(results => {
             signers = results.rows;
+            console.log("signers row: ", results.rows);
             res.render("signers", {
                 layout: "main",
                 title: "our great signers",
-                names: signers
+                signers: signers
             });
         })
         .catch(err => {

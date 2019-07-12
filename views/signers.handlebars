@@ -1,8 +1,15 @@
 <p>We the undersigned demand that the blablablasdfj sadjf asdjf asd;jfldalsf jdsalf lkdsajf dsalkjf aslkdjf ;ldasjflsajd flkadjsf .</p>
 
 <div class="wrap_namelists">
-    {{#names}}
-    <p>{{first_name}} {{last_name}}</p>
-    {{/names}}
+    {{#signers}}
+    <p>
+        {{#if url}}
+        <a href="{{url}}">{{first_name}} {{last_name}}</a>
+        {{else}}
+    		{{first_name}} {{last_name}}
+    	{{/if}}
+         {{age}} <a href="petition/signers/{{city}}">{{city}}</a>
+     </p>
+    {{/signers}}
 
 </div>
