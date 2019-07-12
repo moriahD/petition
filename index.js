@@ -189,9 +189,10 @@ app.get("/thankyou", function(req, res) {
             imgUrl = results.rows[0].signature;
 
             var numSigners;
-            db.getNumbers()
-                .then(number => {
-                    numSigners = number.rows[0].count;
+            db.getAllProfile()
+                .then(results => {
+                    console.log("numbers results: ", results);
+                    numSigners = results.rowCount;
                     res.render("thankyou", {
                         layout: "main",
                         // name: name,
@@ -211,8 +212,7 @@ app.get("/thankyou", function(req, res) {
 ////////////// LISTS OF SIGNERS //////////////
 app.get("/signers", function(req, res) {
     var signers;
-
-    db.getNamesSigners()
+    db.getAllProfile()
         .then(results => {
             signers = results.rows;
             res.render("signers", {

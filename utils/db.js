@@ -27,9 +27,9 @@ exports.addUser = function addUser(first_name, last_name, email, password) {
     );
 };
 //get total number of signers
-exports.getNumbers = function getNumbers() {
-    return db.query("SELECT COUNT(id) FROM users ");
-};
+// exports.getNumbers = function getNumbers() {
+//     return db.query("SELECT COUNT(id) FROM users ");
+// };
 
 exports.getNamesSigners = function getNames() {
     return db.query("SELECT * FROM petitionLists");
@@ -56,9 +56,8 @@ exports.addProfile = function addProfile(age, city, url, user_id) {
 exports.getAllProfile = function getProfile() {
     return db.query(
         //i have to join the table
-        `SELECT * FROM users
-            FULL JOIN profile, petitionLists ON users.key=profile.key= petitionLists.key
-
-            `
+        `select users.first_name, users.last_name, profile.age, profile.city, profile.url
+from users left join profile on users.id = profile.user_id
+join petitionlists on users.id = petitionlists.user_id;`
     );
 };
