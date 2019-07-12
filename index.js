@@ -55,7 +55,7 @@ app.get("/", function(req, res) {
 ////////////// LOGIN //////////////
 app.get("/login", function(req, res) {
     res.render("login", {
-        title: "Please log in."
+        main_text: "Please log in."
     });
     // get info of form
 });
@@ -65,10 +65,9 @@ app.post("/login", function(req, res) {
         .then(result => {
             if (!result.rows[0]) {
                 res.render("login", {
-                    error: "Your email does not exist!!! Try again."
+                    error: "Something is wrong! Please try to type carefully."
                 });
             } else {
-                console.log(result.rows[0].id);
                 req.session.userId = result.rows[0].id;
                 console.log("id", req.session.userId);
                 return result;
@@ -77,11 +76,9 @@ app.post("/login", function(req, res) {
         .then(result => {
             bc.checkPassword(req.body.password, result.rows[0].password)
                 .then(results => {
-                    // console.log("pw results", results);
                     if (!results) {
-                        // console.log("password does not match");
                         res.render("login", {
-                            error: "Your password does not match!!! Try again."
+                            error: "Oops, wrong password! Try again."
                         });
                     } else {
                         db.getSigByUserId(req.session.userId).then(result => {
@@ -106,8 +103,10 @@ app.post("/login", function(req, res) {
 ////////////// REGISTER //////////////
 app.get("/register", function(req, res) {
     res.render("register", {
-        title:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+        main_text: '"Look what you did to me"',
+        sub_text1: `If you don't pick it up, they will pick it up.`,
+        sub_text2: `Join our petition to stop throwing cigarette butts.`,
+        imgMain: "/seagull.jpg"
     });
 });
 app.post("/register", (req, res) => {
@@ -135,7 +134,7 @@ app.get("/profile", (req, res) => {
     console.log("a GET for profile/ happened!");
     res.render("profile", {
         layout: "main",
-        title: "Now please tell us just a little bit more about yourself."
+        main_text: "Now please tell us just a little bit more about yourself."
     });
 });
 app.post("/profile", (req, res) => {
@@ -164,7 +163,7 @@ app.get("/petition", function(req, res) {
         console.log("a GET for petition/ happened!");
         res.render("petition", {
             layout: "main",
-            title: "Welcome to this petition page"
+            main_text: "Welcome to this petition page"
         });
     }
 });
@@ -219,7 +218,7 @@ app.get("/signers", function(req, res) {
             console.log("signers row: ", results.rows);
             res.render("signers", {
                 layout: "main",
-                title: "our great signers",
+                main_text: "our great signers",
                 signers: signers
             });
         })
@@ -227,7 +226,10 @@ app.get("/signers", function(req, res) {
             console.log("err in signers : ", err);
         });
 });
-
+/////////// LISTS OF SIGNERS BY CITY ///////////
+app.get("/signers/:byCity", function(req, res) {
+    //I have to work on this
+});
 //////////////SUPER TEST/////////////////////
 app.get("/home", (req, res) => {
     res.send("hi, welcome");
