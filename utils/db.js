@@ -31,16 +31,17 @@ exports.getNumbers = function getNumbers() {
     return db.query("SELECT COUNT(id) FROM users ");
 };
 
-exports.getNames = function getNames() {
-    return db.query("SELECT * FROM users");
+exports.getNamesSigners = function getNames() {
+    return db.query("SELECT * FROM petitionLists");
 };
 exports.getUserId = function(email) {
     return db.query("SELECT * FROM users WHERE email = $1", [email]);
 };
-exports.getSignature = function(id) {
-    return db.query("SELECT signature FROM petitionLists WHERE user_id = $1", [
-        id
-    ]);
+exports.getSigByUserId = function(id) {
+    return db.query(
+        "SELECT signature FROM petitionLists WHERE user_id = $1 AND length(signature)>0",
+        [id]
+    );
 };
 
 ////PROFILE ////
@@ -52,6 +53,12 @@ exports.addProfile = function addProfile(age, city, url, user_id) {
     );
 };
 
-exports.getProfile = function getProfile(user_id) {
-    return db.query("SELECT * FROM profile WHERE id = $1", [user_id]);
+exports.getAllProfile = function getProfile() {
+    return db.query(
+        //i have to join the table
+        `SELECT * FROM users
+            FULL JOIN profile, petitionLists ON users.key=profile.key= petitionLists.key
+
+            `
+    );
 };

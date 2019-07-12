@@ -1,5 +1,5 @@
 const express = require("express");
-const app = express();
+const app = (exports.app = express());
 
 const db = require("./utils/db");
 const hb = require("express-handlebars");
@@ -38,6 +38,13 @@ app.use(function(req, res, next) {
     res.locals.csrfToken = req.csrfToken();
     next();
 });
+app.use((req, res, next) => {
+    if (!req.session.userId && req.url != "/register" && req.url != "/login") {
+        res.redirect("/register");
+    } else {
+        next();
+    }
+});
 app.get("/", function(req, res) {
     if (req.session.signatureId) {
         res.redirect("/thankyou");
@@ -63,21 +70,32 @@ app.post("/login", function(req, res) {
             } else {
                 console.log(result.rows[0].id);
                 req.session.userId = result.rows[0].id;
+                console.log("id", req.session.userId);
                 return result;
             }
         })
         .then(result => {
             bc.checkPassword(req.body.password, result.rows[0].password)
-
                 .then(results => {
+                    // console.log("pw results", results);
                     if (!results) {
-                        console.log("password does not match");
-
+                        // console.log("password does not match");
                         res.render("login", {
                             error: "Your password does not match!!! Try again."
                         });
                     } else {
-                        res.redirect("/thankyou");
+                        db.getSigByUserId(req.session.userId).then(result => {
+                            // console.log(
+                            //     "getsigbyuserid result: ",
+                            //     result.rows[0].signature
+                            // );
+                            if (result.rows[0].signature) {
+                                req.session.signatureId = true;
+                                res.redirect("/thankyou");
+                            } else {
+                                res.redirect("/petition");
+                            }
+                        });
                     }
                 })
                 .catch(err => {
@@ -137,11 +155,16 @@ app.post("/profile", (req, res) => {
 
 ////////////// SIGN THE PETITION //////////////
 app.get("/petition", function(req, res) {
-    console.log("a GET for petition/ happened!");
-    res.render("petition", {
-        layout: "main",
-        title: "Welcome to this petition page"
-    });
+    console.log(req.session);
+    if (req.session.signatureId) {
+        res.redirct("/thankyou");
+    } else {
+        console.log("a GET for petition/ happened!");
+        res.render("petition", {
+            layout: "main",
+            title: "Welcome to this petition page"
+        });
+    }
 });
 app.post("/petition", (req, res) => {
     db.addSignature(req.body.signature, req.session.userId)
@@ -159,7 +182,7 @@ app.post("/petition", (req, res) => {
 ////////////// THANKYOU PAGE //////////////
 app.get("/thankyou", function(req, res) {
     console.log(req.session.userId);
-    db.getSignature(req.session.userId)
+    db.getSigByUserId(req.session.userId)
         .then(results => {
             console.log("results of signature", results);
             var imgUrl;
@@ -188,7 +211,8 @@ app.get("/thankyou", function(req, res) {
 ////////////// LISTS OF SIGNERS //////////////
 app.get("/signers", function(req, res) {
     var signers;
-    db.getNames()
+
+    db.getNamesSigners()
         .then(results => {
             signers = results.rows;
             res.render("signers", {
@@ -202,4 +226,28 @@ app.get("/signers", function(req, res) {
         });
 });
 
-app.listen(process.env.PORT || 8080, () => console.log("i'm listening"));
+//////////////SUPER TEST/////////////////////
+app.get("/home", (req, res) => {
+    res.send("hi, welcome");
+});
+app.get("/product", (req, res) => {
+    res.send(`
+        <html>
+            <h1></h1>
+            <form method='POST'>
+                <button></button>
+                <input type='hidden' name='_csrf' value="${req.csrfToken()}">
+            </form>
+        </html>
+        `);
+});
+app.post("/product", (req, res) => {
+    req.session.wouldLikeToBuy = true;
+    req.session.puppy = "Layla";
+    res.redirect("/home");
+});
+// //////////////SUPER TEST/////////////////////
+
+if (require.main == module) {
+    app.listen(process.env.PORT || 8080, () => console.log("i'm listening"));
+}
