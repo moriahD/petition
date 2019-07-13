@@ -17,6 +17,9 @@ h1,
 p {
     margin: 0;
 }
+a {
+    color: #0aefa1;
+}
 .birdTalk {
     font-size: 40px;
     color: white;

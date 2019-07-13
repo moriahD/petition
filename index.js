@@ -158,7 +158,7 @@ app.post("/profile", (req, res) => {
 app.get("/petition", function(req, res) {
     console.log(req.session);
     if (req.session.signatureId) {
-        res.redirct("/thankyou");
+        res.redirect("/thankyou");
     } else {
         console.log("a GET for petition/ happened!");
         res.render("petition", {
@@ -227,8 +227,19 @@ app.get("/signers", function(req, res) {
         });
 });
 /////////// LISTS OF SIGNERS BY CITY ///////////
-app.get("/signers/:byCity", function(req, res) {
-    //I have to work on this
+app.get("/petition/signers/:byCity", function(req, res) {
+    db.getSignersByCity(req.params.byCity.toLowerCase())
+        .then(result => {
+            console.log("result by city: ", result);
+            var signers = result.rows;
+            res.render("city", {
+                layout: "main",
+                signers: signers
+            });
+        })
+        .catch(err => {
+            console.log("err in getting signers sorted by city : ", err);
+        });
 });
 //////////////SUPER TEST/////////////////////
 app.get("/home", (req, res) => {

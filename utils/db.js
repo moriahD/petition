@@ -58,15 +58,22 @@ exports.addProfile = function addProfile(age, city, url, user_id) {
 exports.getSignerName = function getSignerName(user_id) {
     return db.query(
         `
-        select * from petitionlists left join users on petitionlists.user_id = users.id WHERE user_id = $1 AND length(signature)>0`,
+        SELECT * FROM petitionlists LEFT JOIN users on petitionlists.user_id = users.id WHERE user_id = $1 AND length(signature)>0`,
         [user_id]
     );
 };
 exports.getAllProfile = function getProfile() {
     return db.query(
-        //i have to join the table
-        `select users.first_name, users.last_name, profile.age, profile.city, profile.url
-from users left join profile on users.id = profile.user_id
-join petitionlists on users.id = petitionlists.user_id;`
+        `SELECT users.first_name, users.last_name, profile.age, profile.city, profile.url
+FROM users LEFT JOIN profile ON users.id = profile.user_id
+JOIN petitionlists ON users.id = petitionlists.user_id;`
+    );
+};
+exports.getSignersByCity = function getSignersByCity(city) {
+    return db.query(
+        `
+        select * from profile join users on profile.user_id = users.id WHERE LOWER(city) = LOWER($1)
+    `,
+        [city]
     );
 };
