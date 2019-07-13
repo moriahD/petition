@@ -85,10 +85,10 @@ app.post("/login", function(req, res) {
                         });
                     } else {
                         db.getSigByUserId(req.session.userId).then(result => {
-                            // console.log(
-                            //     "getsigbyuserid result: ",
-                            //     result.rows[0].signature
-                            // );
+                            console.log(
+                                "getsigbyuserid result: ",
+                                result.rows[0].signature
+                            );
                             if (result.rows[0].signature) {
                                 req.session.signatureId = true;
                                 res.redirect("/thankyou");
@@ -161,6 +161,7 @@ app.get("/profile/edit", (req, res) => {
     db.getUserInfoById(req.session.userId)
         .then(result => {
             console.log("get user info by id: ", result);
+            console.log("get age value : ", result.rows[0].age);
             res.render("edit", {
                 layout: "main",
                 sub_text: "Edit information about you.",
@@ -179,24 +180,29 @@ app.post("/profile/edit", (req, res) => {
     if (req.body.password) {
         bc.hashPassword(req.body.password, req.session.userId)
             .then(hashedpw => {
-                db.updateUserPassword(hashedpw);
+                db.updateUserPassword(hashedpw, req.session.userId);
                 res.redirect("/thankyou");
             })
             .catch(err => console.log("error in hashing pw", err));
     } else {
-        console.log("what's req.body: ", req.body);
-        console.log("session user id: ", req.session.userId);
-        console.log("req.body first name: ", req.body.first_name);
         db.updateUserNoPassword(
             req.body.first_name,
             req.body.last_name,
             req.body.email,
             req.session.userId
         )
-            .then(result => {
-                console.log("update user no pw result: ", result);
-                res.redirect("/thankyou");
-            })
+            .then(
+                db
+                    .updateProfile(
+                        req.session.userId,
+                        req.body.age,
+                        req.body.city,
+                        req.body.url
+                    )
+                    .then(() => {
+                        res.redirect("/thankyou");
+                    })
+            )
             .catch(err => console.log("error in updaiting user info", err));
     }
 });
@@ -210,7 +216,6 @@ app.get("/logout", (req, res) => {
 
 ////////////// SIGN THE PETITION //////////////
 app.get("/petition", function(req, res) {
-    console.log(req.session);
     if (req.session.signatureId) {
         res.redirect("/thankyou");
     } else {
@@ -224,7 +229,6 @@ app.get("/petition", function(req, res) {
 app.post("/petition", (req, res) => {
     db.addSignature(req.body.signature, req.session.userId)
         .then(results => {
-            console.log("results after adding signature", results);
             req.session.signatureId = results.rows[0].id;
             res.redirect("/thankyou");
         })
@@ -245,7 +249,6 @@ app.get("/thankyou", function(req, res) {
             var numSigners;
             db.getAllProfile()
                 .then(results => {
-                    console.log("numbers results: ", results);
                     numSigners = results.rowCount;
                     res.render("thankyou", {
                         layout: "main",
@@ -270,7 +273,7 @@ app.get("/signers", function(req, res) {
     db.getAllProfile()
         .then(results => {
             signers = results.rows;
-            console.log("signers row: ", results.rows);
+
             res.render("signers", {
                 layout: "main",
                 main_text: "our great signers",
@@ -285,7 +288,6 @@ app.get("/signers", function(req, res) {
 app.get("/petition/signers/:byCity", function(req, res) {
     db.getSignersByCity(req.params.byCity)
         .then(result => {
-            console.log("result by city: ", result);
             var signers = result.rows;
             res.render("city", {
                 signers: signers

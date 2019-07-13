@@ -79,7 +79,7 @@ exports.getSignersByCity = function getSignersByCity(city) {
 };
 exports.getUserInfoById = function getUserInfoById(usersId) {
     return db.query(
-        `select * from users left join profile on users.id = profile.id WHERE users.id = $1`,
+        `select * from users left join profile on users.id = profile.user_id WHERE users.id = $1;`,
         [usersId]
     );
 };
@@ -105,7 +105,7 @@ exports.updateProfile = function updateProfile(user_id, age, city, url) {
         `INSERT INTO profile (user_id, age, city, url)
     VALUES ($1, $2, $3, $4)
     ON CONFLICT (user_id)
-    DO UPDATE SET age = $2, city = $3, url = $4`,
-        [user_id, age || null, city || null, url || null]
+    DO UPDATE SET age = $2, city = $3, url = $4;`,
+        [user_id, age, city, url]
     );
 };
