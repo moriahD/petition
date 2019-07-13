@@ -156,12 +156,50 @@ app.post("/profile", (req, res) => {
     console.log("a POST for profile/ happened!");
 });
 ////////////// PROFILE EDIT //////////////
-// app.get("/profile/edit", (req, res) => {
-//
-// });
-// app.post("/profile/edit", (req, res) => {
-//
-// });
+app.get("/profile/edit", (req, res) => {
+    console.log("checking req.session.userId : ", req.session.userId);
+    db.getUserInfoById(req.session.userId)
+        .then(result => {
+            console.log("get user info by id: ", result);
+            res.render("edit", {
+                layout: "main",
+                sub_text: "Edit information about you.",
+                first_name: result.rows[0].first_name,
+                last_name: result.rows[0].last_name,
+                email: result.rows[0].email,
+                password: result.rows[0].password,
+                age: result.rows[0].age,
+                city: result.rows[0].city,
+                url: result.rows[0].url
+            });
+        })
+        .catch();
+});
+app.post("/profile/edit", (req, res) => {
+    if (req.body.password) {
+        bc.hashPassword(req.body.password, req.session.userId)
+            .then(hashedpw => {
+                db.updateUserPassword(hashedpw);
+                res.redirect("/thankyou");
+            })
+            .catch(err => console.log("error in hashing pw", err));
+    } else {
+        console.log("what's req.body: ", req.body);
+        console.log("session user id: ", req.session.userId);
+        console.log("req.body first name: ", req.body.first_name);
+        db.updateUserNoPassword(
+            req.body.first_name,
+            req.body.last_name,
+            req.body.email,
+            req.session.userId
+        )
+            .then(result => {
+                console.log("update user no pw result: ", result);
+                res.redirect("/thankyou");
+            })
+            .catch(err => console.log("error in updaiting user info", err));
+    }
+});
 ////////////// DELETE SIGNATURE ////////////////
 
 ////////////// LOG OUT //////////////
@@ -250,7 +288,6 @@ app.get("/petition/signers/:byCity", function(req, res) {
             console.log("result by city: ", result);
             var signers = result.rows;
             res.render("city", {
-                layout: "main",
                 signers: signers
             });
         })

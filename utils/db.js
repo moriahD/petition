@@ -77,3 +77,35 @@ exports.getSignersByCity = function getSignersByCity(city) {
         [city]
     );
 };
+exports.getUserInfoById = function getUserInfoById(usersId) {
+    return db.query(
+        `select * from users left join profile on users.id = profile.id WHERE users.id = $1`,
+        [usersId]
+    );
+};
+exports.updateUserPassword = function updateUserPassword(password, id) {
+    return db.query(`UPDATE users SET password = $1  WHERE id = $2`, [
+        password,
+        id
+    ]);
+};
+exports.updateUserNoPassword = function updateUserNoPassword(
+    first_name,
+    last_name,
+    email,
+    id
+) {
+    return db.query(
+        `UPDATE users SET first_name = $1, last_name = $2, email = $3 WHERE id = $4  RETURNING *;`,
+        [first_name, last_name, email, id]
+    );
+};
+exports.updateProfile = function updateProfile(user_id, age, city, url) {
+    return db.query(
+        `INSERT INTO profile (user_id, age, city, url)
+    VALUES ($1, $2, $3, $4)
+    ON CONFLICT (user_id)
+    DO UPDATE SET age = $2, city = $3, url = $4`,
+        [user_id, age || null, city || null, url || null]
+    );
+};

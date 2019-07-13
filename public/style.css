@@ -76,3 +76,8 @@ input {
     height: 40px;
     background-color: #0aefa1;
 }
+#editProfile_wrap {
+}
+#editProfile_wrap label {
+    color: #fff;
+}
