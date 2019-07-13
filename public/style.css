@@ -2,8 +2,8 @@ body {
     margin: 0 auto;
     text-align: center;
     font-family: "Montserrat", sans-serif;
-    padding: 20px;
-    height: 100vh;
+    padding: 51px 20px 20px 20px;
+    min-height: 100vh;
     background: repeating-linear-gradient(
         -55deg,
         #0c0c0c,
@@ -12,6 +12,31 @@ body {
         #000 20px
     );
     color: #ddd;
+}
+nav {
+    position: fixed;
+    right: 0;
+    left: 0;
+    top: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 20px;
+    background: black;
+    border-bottom: 1px solid #ddd;
+}
+nav li {
+    display: inline;
+    text-decoration: none;
+    padding-right: 15px;
+}
+nav li a {
+    color: #0aefa1;
+    text-decoration: none;
+}
+nav li a:hover {
+    text-decoration: underline;
 }
 h1,
 p {
@@ -47,5 +72,7 @@ input {
 .wrap_namelists p {
     text-transform: capitalize;
 }
-footer {
+#delete_btn {
+    height: 40px;
+    background-color: #0aefa1;
 }

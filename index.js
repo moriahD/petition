@@ -6,6 +6,7 @@ const hb = require("express-handlebars");
 var cookieSession = require("cookie-session");
 const csurf = require("csurf");
 const bc = require("./utils/bc");
+
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 app.use("/favicon.ico", (request, response) => response.sendStatus(404));
@@ -41,10 +42,12 @@ app.use(function(req, res, next) {
 app.use((req, res, next) => {
     if (!req.session.userId && req.url != "/register" && req.url != "/login") {
         res.redirect("/register");
+        res.locals.on = true;
     } else {
         next();
     }
 });
+
 app.get("/", function(req, res) {
     if (req.session.signatureId) {
         res.redirect("/thankyou");
@@ -102,12 +105,7 @@ app.post("/login", function(req, res) {
 });
 ////////////// REGISTER //////////////
 app.get("/register", function(req, res) {
-    res.render("register", {
-        main_text: '"Look what you did to me"',
-        sub_text1: `If you don't pick it up, they will pick it up.`,
-        sub_text2: `Join our petition to stop throwing cigarette butts.`,
-        imgMain: "/seagull.jpg"
-    });
+    res.render("register");
 });
 app.post("/register", (req, res) => {
     bc.hashPassword(req.body.password).then(hashedpw => {
@@ -141,8 +139,12 @@ app.post("/profile", (req, res) => {
     let url;
     if (!req.body.url.startsWith("http")) {
         url = "http://" + req.body.url;
-    } else {
+    } else if (req.body.url.startsWith("http")) {
         url = req.body.url;
+    } else if (req.body.url.contains("=" || "'" || ";")) {
+        !url;
+    } else if (req.body.url == "") {
+        !url;
     }
 
     db.addProfile(req.body.age, req.body.city, url, req.session.userId)
@@ -152,6 +154,20 @@ app.post("/profile", (req, res) => {
         });
 
     console.log("a POST for profile/ happened!");
+});
+////////////// PROFILE EDIT //////////////
+// app.get("/profile/edit", (req, res) => {
+//
+// });
+// app.post("/profile/edit", (req, res) => {
+//
+// });
+////////////// DELETE SIGNATURE ////////////////
+
+////////////// LOG OUT //////////////
+app.get("/logout", (req, res) => {
+    req.session = null;
+    res.redirect("/register");
 });
 
 ////////////// SIGN THE PETITION //////////////
@@ -198,7 +214,8 @@ app.get("/thankyou", function(req, res) {
                         first_name: first_name,
                         imgUrl: imgUrl,
                         number: numSigners,
-                        url: "/signers"
+                        url: "/signers",
+                        delete: "Delete Your Signature"
                     });
                 })
                 .catch(err => {
@@ -228,7 +245,7 @@ app.get("/signers", function(req, res) {
 });
 /////////// LISTS OF SIGNERS BY CITY ///////////
 app.get("/petition/signers/:byCity", function(req, res) {
-    db.getSignersByCity(req.params.byCity.toLowerCase())
+    db.getSignersByCity(req.params.byCity)
         .then(result => {
             console.log("result by city: ", result);
             var signers = result.rows;
