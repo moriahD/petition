@@ -106,7 +106,7 @@ app.post("/login", function(req, res) {
                     }
                 })
                 .catch(err => {
-                    //console.log(err);
+                    console.log(err);
                 });
         });
 });
@@ -128,7 +128,7 @@ app.post("/register", (req, res) => {
                 res.redirect("/profile");
             })
             .catch(err => {
-                //console.log("err in registering: ", err);
+                console.log("err in registering: ", err);
             });
     });
 
@@ -148,18 +148,18 @@ app.get("/signed", (req, res) => {
             });
         })
         .catch(err => {
-            //console.log("err in getting numbers of signers : ", err);
+            console.log("err in getting numbers of signers : ", err);
         });
 });
 app.post("/signed", (req, res) => {
     //todo: could be a POST to /signature/delete or /signature/{id}/delete
     db.deleteSignature(req.session.userId)
         .then(() => {
-            req.session.userId = null; //fixme: why you logout the user?
-            res.redirect("/register");
+            req.session.signatureId = null;
+            res.redirect("/petition");
         })
         .catch(err => {
-            //console.log("error in deleting signature: ", err);
+            console.log("error in deleting signature: ", err);
         });
 });
 ////////////// USER PROFILE //////////////
@@ -209,12 +209,12 @@ app.get("/profile/edit", (req, res) => {
 });
 app.post("/profile/edit", (req, res) => {
     if (req.body.password) {
-        bc.hashPassword(req.body.password, req.session.userId)
-            .then(hashedpw => {
+        bc.hashPassword(req.body.password, req.session.userId).then(
+            hashedpw => {
                 db.updateUserPassword(hashedpw, req.session.userId);
-                res.redirect("/signed"); // fixme: is this correct? the user on the edit profile page changes password and gets redirected to /signed .. also, the user together with the password may have changed other data which is not updated
-            })
-            .catch(err => console.log("error in hashing pw", err));
+                res.redirect("/signed");
+            }
+        );
     } else {
         db.updateUserNoPassword(
             req.body.first_name,
@@ -222,19 +222,17 @@ app.post("/profile/edit", (req, res) => {
             req.body.email,
             req.session.userId
         )
-            .then(
-                db
-                    .updateProfile(
-                        req.session.userId,
-                        req.body.age,
-                        req.body.city,
-                        req.body.url
-                    )
-                    .then(() => {
-                        res.redirect("/signed");
-                    })
-            )
-            .catch(err => console.log("error in updaiting user info", err));
+            .then(() => {
+                db.updateProfile(
+                    req.body.age,
+                    req.body.city,
+                    req.body.url,
+                    req.session.userId
+                ).then(res.redirect("/signed"));
+            })
+            .catch(err => {
+                console.log("err in edit profile:", err);
+            });
     }
 });
 
@@ -247,7 +245,7 @@ app.get("/logout", (req, res) => {
 ////////////// SIGN THE PETITION //////////////
 app.get("/petition", function(req, res) {
     if (req.session.signatureId) {
-        res.redirect("/thankyou");
+        res.redirect("/signed");
     } else {
         //console.log("a GET for petition/ happened!");
         res.render("petition", {

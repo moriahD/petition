@@ -106,13 +106,14 @@ exports.updateUserNoPassword = function updateUserNoPassword(
         [first_name, last_name, email, id]
     );
 };
-exports.updateProfile = function updateProfile(user_id, age, city, url) {
+exports.updateProfile = function updateProfile(age, city, url, id) {
     return db.query(
-        `INSERT INTO profile (user_id, age, city, url)
+        `INSERT INTO profile (age, city, url, user_id)
     VALUES ($1, $2, $3, $4)
     ON CONFLICT (user_id)
-    DO UPDATE SET age = $2, city = $3, url = $4;`,
-        [user_id, age, city, url]
+    DO UPDATE SET age=EXCLUDED.age, city=EXCLUDED.city, url=EXCLUDED.url
+        RETURNING age, city, url, user_id`,
+        [age, city, url, id]
     );
 };
 exports.deleteSignature = function deleteSignature(user_id) {

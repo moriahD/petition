@@ -77,8 +77,10 @@ a,
     font-size: 22px;
 }
 #main_img {
+    text-align: center;
     padding-top: 10px;
     max-width: 830px;
+    overflow: hidden;
 }
 #signature {
     border: 1px dashed #ccc;

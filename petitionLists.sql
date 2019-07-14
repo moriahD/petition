@@ -22,12 +22,12 @@ CREATE TABLE profile(
     age INT,
     city VARCHAR(100),
     url VARCHAR(300),
-    user_id INT,
+    user_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 );
 
-INSERT INTO profile (age,city,url,user_id ) VALUES (37, 'berlin', 'www.google.com', user_id);
+INSERT INTO profile (age,city,url,user_id ) VALUES (37, 'berlin', 'www.google.com', 1);
 
 -- getting data from a table
 SELECT * FROM profile;
