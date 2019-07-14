@@ -176,8 +176,6 @@ app.post("/profile", (req, res) => {
         url = "http://" + req.body.url;
     } else if (req.body.url.startsWith("http")) {
         url = req.body.url;
-    } else if (req.body.url.contains("=" || "'" || ";")) {
-        !url;
     } else if (req.body.url.length == 0) {
         !url;
     }
@@ -185,7 +183,7 @@ app.post("/profile", (req, res) => {
     db.addProfile(req.body.age, req.body.city, url, req.session.userId)
         .then(res.redirect("/petition"))
         .catch(err => {
-            //console.log("err in adding profile: ", err);
+            console.log("err in adding profile: ", err);
         });
 
     //console.log("a POST for profile/ happened!");

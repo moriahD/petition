@@ -141,7 +141,7 @@ input[type="password"] {
 .wrap_alignLeft {
     text-align: left;
     float: left;
-    padding-top: 20px;
+    padding-top: 45px;
     width: 40%;
 }
 .wrap_alignLeft .birdTalk {
@@ -150,7 +150,7 @@ input[type="password"] {
     padding-bottom: 10px;
 }
 .wrap_right {
-    padding-top: 20px;
+    padding-top: 45px;
     float: left;
 }
 .wrap_right img {

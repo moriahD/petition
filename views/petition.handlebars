@@ -1,17 +1,19 @@
 {{> nav}}
 <div class="wrap_alignLeft">
-<header><p class="sub_text">Please sign!</p></header>
+<p class="birdTalk">"Please sign!""</p>
+
+<div class="wrap" >
+    <p style="padding: 10px 0;">Draw your signature here</p>
+    <canvas id="signature" width="500" height="150"></canvas>
+</div>
 <form method="POST">
 
     <input type="text" name="signature"id="sig"/>
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
-<button name="submit_btn">submit</button>
+<button name="submit_btn" class="btn">submit</button>
 </form>
-<div class="wrap">
-    <p>Draw your signature here</p>
-    <canvas id="signature" width="500" height="100"></canvas>
-</div>
+
 </div>
 
 <div class="wrap_right">

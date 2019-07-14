@@ -33,7 +33,7 @@ signature
 
 signature.on("mousemove", function(e) {
     if (mousedown) {
-        c.strokeStyle = "red";
+        c.strokeStyle = "#0aefa1";
         c.lineWidth = "2";
         c.beginPath();
         c.moveTo(pos.x, pos.y); // from
