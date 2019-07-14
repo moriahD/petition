@@ -12,6 +12,7 @@ body {
         #000 20px
     );
     color: #ddd;
+    font-size: 18px;
 }
 nav {
     position: fixed;
@@ -25,6 +26,7 @@ nav {
     padding-left: 20px;
     background: black;
     border-bottom: 1px solid #ddd;
+    z-index: 100;
 }
 nav li {
     display: inline;
@@ -72,12 +74,41 @@ input {
 .wrap_namelists p {
     text-transform: capitalize;
 }
-#delete_btn {
-    height: 40px;
-    background-color: #0aefa1;
+.btn {
+    padding: 15px 25px;
+    background-color: #000;
+    color: #ddd;
+    border: 1px solid #0aefa1;
+    border-radius: 7px;
+    font-size: 18px;
 }
-#editProfile_wrap {
+.btn:hover {
+    color: #0aefa1;
 }
-#editProfile_wrap label {
+.profile_wrap {
+    display: flex;
+    flex-direction: column;
+    max-width: 320px;
+    text-align: left;
+}
+input {
+    height: 30px;
+    opacity: 0.7;
+}
+input[type="text"]:focus,
+input[type="password"]:focus {
+    color: #0aefa1;
+}
+.profile_wrap input[type="text"],
+.profile_wrap input[type="password"] {
+    width: 100%;
+    border: 1px solid #333;
+    padding: 5px;
+    font-size: 18px;
+    color: #333439;
+}
+.profile_wrap label {
     color: #fff;
+    text-align: left;
+    padding-bottom: 5px;
 }

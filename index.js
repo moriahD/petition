@@ -28,7 +28,7 @@ app.use(
 );
 app.use((req, res, next) => {
     if (req.session.signatureId && req.url == "/petition") {
-        res.redirect("/thankyou");
+        res.redirect("/signed");
     } else {
         next();
     }
@@ -49,8 +49,10 @@ app.use((req, res, next) => {
 });
 
 app.get("/", function(req, res) {
-    if (req.session.signatureId) {
-        res.redirect("/thankyou");
+    if (req.session.userId && req.session.signatureId) {
+        res.redirect("/signed");
+    } else if (req.session.userId && !req.session.signatureId) {
+        res.redirect("/petition");
     } else {
         res.redirect("/register");
     }
@@ -72,7 +74,7 @@ app.post("/login", function(req, res) {
                 });
             } else {
                 req.session.userId = result.rows[0].id;
-                console.log("id", req.session.userId);
+                //console.log("id", req.session.userId);
                 return result;
             }
         })
@@ -85,21 +87,26 @@ app.post("/login", function(req, res) {
                         });
                     } else {
                         db.getSigByUserId(req.session.userId).then(result => {
-                            console.log(
-                                "getsigbyuserid result: ",
+                            // console.log(
+                            //     "getsigbyuserid result: ",
+                            //     result.rows[0].signature
+                            // );
+                            if (
+                                result.rows.length > 0 &&
                                 result.rows[0].signature
-                            );
-                            if (result.rows[0].signature) {
+                            ) {
                                 req.session.signatureId = true;
-                                res.redirect("/thankyou");
+                                res.redirect("/signed");
+                                console.log("redirecting to /signed..");
                             } else {
+                                console.log("redirecting to /petition..");
                                 res.redirect("/petition");
                             }
                         });
                     }
                 })
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                 });
         });
 });
@@ -121,15 +128,43 @@ app.post("/register", (req, res) => {
                 res.redirect("/profile");
             })
             .catch(err => {
-                console.log("err in registering: ", err);
+                //console.log("err in registering: ", err);
             });
     });
 
-    console.log("post is happening");
+    //console.log("post is happening");
+});
+////////////// SIGNED: AND DELETE SIGNATURE ///////
+app.get("/signed", (req, res) => {
+    db.getSignerName(req.session.userId)
+        .then(results => {
+            //console.log("result: !!!!", results);
+            var first_name = results.rows[0].first_name;
+            var imgUrl = results.rows[0].signature;
+            res.render("signed", {
+                first_name: first_name,
+                imgUrl: imgUrl,
+                delete: "Delete Your Signature"
+            });
+        })
+        .catch(err => {
+            //console.log("err in getting numbers of signers : ", err);
+        });
+});
+app.post("/signed", (req, res) => {
+    //todo: could be a POST to /signature/delete or /signature/{id}/delete
+    db.deleteSignature(req.session.userId)
+        .then(() => {
+            req.session.userId = null; //fixme: why you logout the user?
+            res.redirect("/register");
+        })
+        .catch(err => {
+            //console.log("error in deleting signature: ", err);
+        });
 });
 ////////////// USER PROFILE //////////////
 app.get("/profile", (req, res) => {
-    console.log("a GET for profile/ happened!");
+    //console.log("a GET for profile/ happened!");
     res.render("profile", {
         layout: "main",
         main_text: "Now please tell us just a little bit more about yourself."
@@ -137,31 +172,29 @@ app.get("/profile", (req, res) => {
 });
 app.post("/profile", (req, res) => {
     let url;
-    if (!req.body.url.startsWith("http")) {
+    if (!req.body.url.startsWith("http") && req.body.url) {
         url = "http://" + req.body.url;
     } else if (req.body.url.startsWith("http")) {
         url = req.body.url;
     } else if (req.body.url.contains("=" || "'" || ";")) {
         !url;
-    } else if (req.body.url == "") {
+    } else if (req.body.url.length == 0) {
         !url;
     }
 
     db.addProfile(req.body.age, req.body.city, url, req.session.userId)
         .then(res.redirect("/petition"))
         .catch(err => {
-            console.log("err in adding profile: ", err);
+            //console.log("err in adding profile: ", err);
         });
 
-    console.log("a POST for profile/ happened!");
+    //console.log("a POST for profile/ happened!");
 });
 ////////////// PROFILE EDIT //////////////
 app.get("/profile/edit", (req, res) => {
-    console.log("checking req.session.userId : ", req.session.userId);
     db.getUserInfoById(req.session.userId)
         .then(result => {
-            console.log("get user info by id: ", result);
-            console.log("get age value : ", result.rows[0].age);
+            //console.log("get age value : ", result);
             res.render("edit", {
                 layout: "main",
                 sub_text: "Edit information about you.",
@@ -181,7 +214,7 @@ app.post("/profile/edit", (req, res) => {
         bc.hashPassword(req.body.password, req.session.userId)
             .then(hashedpw => {
                 db.updateUserPassword(hashedpw, req.session.userId);
-                res.redirect("/thankyou");
+                res.redirect("/signed"); // fixme: is this correct? the user on the edit profile page changes password and gets redirected to /signed .. also, the user together with the password may have changed other data which is not updated
             })
             .catch(err => console.log("error in hashing pw", err));
     } else {
@@ -200,13 +233,12 @@ app.post("/profile/edit", (req, res) => {
                         req.body.url
                     )
                     .then(() => {
-                        res.redirect("/thankyou");
+                        res.redirect("/signed");
                     })
             )
             .catch(err => console.log("error in updaiting user info", err));
     }
 });
-////////////// DELETE SIGNATURE ////////////////
 
 ////////////// LOG OUT //////////////
 app.get("/logout", (req, res) => {
@@ -219,7 +251,7 @@ app.get("/petition", function(req, res) {
     if (req.session.signatureId) {
         res.redirect("/thankyou");
     } else {
-        console.log("a GET for petition/ happened!");
+        //console.log("a GET for petition/ happened!");
         res.render("petition", {
             layout: "main",
             main_text: "Welcome to this petition page"
@@ -236,18 +268,18 @@ app.post("/petition", (req, res) => {
             console.log("err in adding petitioner: ", err);
         });
 
-    console.log("petition post is happening");
+    //console.log("petition post is happening");
 });
 ////////////// THANKYOU PAGE //////////////
 app.get("/thankyou", function(req, res) {
-    console.log("req.session.userId", req.session.userId);
-    console.log("req.session.signatureId", req.session.signatureId);
+    //console.log("req.session.userId", req.session.userId);
+    //console.log("req.session.signatureId", req.session.signatureId);
     db.getSignerName(req.session.userId)
         .then(results => {
             var imgUrl = results.rows[0].signature;
             var first_name = results.rows[0].first_name;
             var numSigners;
-            db.getAllProfile()
+            db.getAllSigners()
                 .then(results => {
                     numSigners = results.rowCount;
                     res.render("thankyou", {
@@ -255,8 +287,7 @@ app.get("/thankyou", function(req, res) {
                         first_name: first_name,
                         imgUrl: imgUrl,
                         number: numSigners,
-                        url: "/signers",
-                        delete: "Delete Your Signature"
+                        url: "/signers"
                     });
                 })
                 .catch(err => {
@@ -270,7 +301,7 @@ app.get("/thankyou", function(req, res) {
 ////////////// LISTS OF SIGNERS //////////////
 app.get("/signers", function(req, res) {
     var signers;
-    db.getAllProfile()
+    db.getAllSigners()
         .then(results => {
             signers = results.rows;
 

@@ -1,28 +1,31 @@
+{{> nav}}
+
+<p>Edit your profile</p>
 <form method="POST">
-<div id="editProfile_wrap">
+<div class="profile_wrap">
 
     <label for="first_name">First Name</label>
-    <input type="text" name="first_name" placeholder="{{first_name}}" value="{{first_name}}" />
+    <input type="text" name="first_name" value="{{first_name}}" />
 
     <label for="last_name">Last Name</label>
-    <input type="text" name="last_name" placeholder="{{last_name}}" value="{{last_name}}"/>
+    <input type="text" name="last_name" value="{{last_name}}"/>
 
     <label for="email">Email address</label>
-    <input type="text" name="email" placeholder="{{email}}" value="{{email}}"/>
+    <input type="text" name="email" value="{{email}}"/>
 
     <label for="password">Password</label>
-    <input type="password" name="password" placeholder="" value=""/>
+    <input type="password" name="password" value=""/>
 
     <label for="age">Age</label>
-    <input type="text" name="age" placeholder="{{age}}" value="{{age}}"/>
+    <input type="text" name="age" value="{{age}}"/>
 
     <label for="city">City</label>
-    <input type="text" name="city" placeholder="{{city}}" value="{{city}}"/>
+    <input type="text" name="city" value="{{city}}"/>
 
     <label for="url">Your website</label>
-    <input type="text" name="url" placeholder="{{url}}" value="{{url}}"/>
+    <input type="text" name="url" placeholder="http://example.com" value="{{url}}"/>
 
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
 </div>
-<button name="submit_btn">UPDATE</button>
+<button name="submit_btn" class="btn" style="float: left;">UPDATE</button>
 </form>

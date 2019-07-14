@@ -12,7 +12,7 @@ exports.getPetitioner = function getPetitioner() {
 };
 // $1 syntax is used to prevent a type of attack called a SQL Injection!
 exports.addSignature = function addSignature(signature, user_id) {
-    console.log(user_id);
+    //console.log(user_id);
     return db.query(
         `INSERT INTO petitionLists (signature, user_id)
         VALUES ($1, $2) RETURNING *`,
@@ -39,6 +39,11 @@ exports.getUserId = function(email) {
     return db.query("SELECT * FROM users WHERE email = $1", [email]);
 };
 exports.getSigByUserId = function(id) {
+    console.log(
+        "SELECT signature FROM petitionLists WHERE user_id = " +
+            id +
+            " AND length(signature)>0"
+    );
     return db.query(
         "SELECT signature FROM petitionLists WHERE user_id = $1 AND length(signature)>0",
         [id]
@@ -48,7 +53,7 @@ exports.getSigByUserId = function(id) {
 ////PROFILE ////
 exports.addProfile = function addProfile(age, city, url, user_id) {
     //i need to check if url is starting with http/https
-    console.log("adding url creating profile", url);
+    //console.log("adding url creating profile", url);
     return db.query(
         `INSERT INTO profile (age, city, url, user_id)
         VALUES ($1, $2, $3, $4 ) RETURNING *;`,
@@ -56,13 +61,14 @@ exports.addProfile = function addProfile(age, city, url, user_id) {
     );
 };
 exports.getSignerName = function getSignerName(user_id) {
+    //fixme: should be users left join petitions, or perhaps inner join, if you want only users who signed
     return db.query(
         `
         SELECT * FROM petitionlists LEFT JOIN users on petitionlists.user_id = users.id WHERE user_id = $1 AND length(signature)>0`,
         [user_id]
     );
 };
-exports.getAllProfile = function getProfile() {
+exports.getAllSigners = function getAllSigners() {
     return db.query(
         `SELECT users.first_name, users.last_name, profile.age, profile.city, profile.url
 FROM users LEFT JOIN profile ON users.id = profile.user_id
@@ -108,4 +114,7 @@ exports.updateProfile = function updateProfile(user_id, age, city, url) {
     DO UPDATE SET age = $2, city = $3, url = $4;`,
         [user_id, age, city, url]
     );
+};
+exports.deleteSignature = function deleteSignature(user_id) {
+    return db.query(`DELETE FROM petitionLists WHERE user_id = $1;`, [user_id]);
 };
