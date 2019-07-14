@@ -2,15 +2,19 @@
 <p class="sub_text">If you don't pick it up, they will pick it up.</p>
 <p class="sub_text">Join our petition to stop throwing cigarette butts.</p>
 <img src="/seagull.jpg" alt="seagul" id="main_img">
-
+<div class="wrap_registerInput">
 <form method="POST">
+
+
+
     <input type="text" name="first_name" placeholder="First Name" />
     <input type="text" name="last_name" placeholder="Last Name" />
     <input type="text" name="email" placeholder="Your Email" />
     <input type="password" name="password" placeholder="Password" />
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
-<button name="submit_btn">SIGN UP</button>
+<button name="submit_btn" class="btn">SIGN UP</button>
 </form>
+</div>
 
 <p>If you are already a member, please <a href="/login">log in.</a></p>

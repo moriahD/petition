@@ -2,7 +2,7 @@ body {
     margin: 0 auto;
     text-align: center;
     font-family: "Montserrat", sans-serif;
-    padding: 51px 20px 20px 20px;
+    padding: 20px;
     min-height: 100vh;
     background: repeating-linear-gradient(
         -55deg,
@@ -13,6 +13,9 @@ body {
     );
     color: #ddd;
     font-size: 18px;
+}
+::selection {
+    background-color: #0aefa1;
 }
 nav {
     position: fixed;
@@ -39,19 +42,36 @@ nav li a {
 }
 nav li a:hover {
     text-decoration: underline;
+    color: #fff;
+}
+footer {
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 30px;
+    display: flex;
+    background: black;
+    border-bottom: 1px solid #ddd;
+    z-index: 100;
 }
 h1,
 p {
     margin: 0;
-}
-a {
-    color: #0aefa1;
 }
 .birdTalk {
     font-size: 40px;
     color: white;
     letter-spacing: 6px;
     font-family: "Permanent Marker", cursive;
+}
+a,
+.birdTalk span {
+    color: #0aefa1;
+}
+.subpage_title {
+    /* background: #0aefa1; */
+    padding-bottom: 10px;
 }
 .sub_text {
     font-size: 22px;
@@ -73,6 +93,7 @@ input {
 }
 .wrap_namelists p {
     text-transform: capitalize;
+    padding-bottom: 10px;
 }
 .btn {
     padding: 15px 25px;
@@ -99,8 +120,13 @@ input[type="text"]:focus,
 input[type="password"]:focus {
     color: #0aefa1;
 }
-.profile_wrap input[type="text"],
-.profile_wrap input[type="password"] {
+.wrap_registerInput input[type="text"],
+.wrap_registerInput input[type="password"] {
+    width: auto;
+    opacity: 1;
+}
+input[type="text"],
+input[type="password"] {
     width: 100%;
     border: 1px solid #333;
     padding: 5px;
@@ -111,4 +137,50 @@ input[type="password"]:focus {
     color: #fff;
     text-align: left;
     padding-bottom: 5px;
+}
+.wrap_alignLeft {
+    text-align: left;
+    float: left;
+    padding-top: 20px;
+    width: 40%;
+}
+.wrap_alignLeft .birdTalk {
+    font-size: 30px;
+    line-height: 1.2;
+    padding-bottom: 10px;
+}
+.wrap_right {
+    padding-top: 20px;
+    float: left;
+}
+.wrap_right img {
+    border: 10px solid white;
+}
+.imgBox {
+    width: 420px;
+    height: 500px;
+    background: url(/happyCat.jpg) no-repeat;
+    border: 10px solid white;
+}
+.imgBox:hover {
+    width: 420px;
+    height: 500px;
+    background: url(/bird_cute.jpg) no-repeat center;
+    border: 10px solid white;
+}
+.imgBox2 {
+    width: 600px;
+    height: 480px;
+    background: url(/cigarette_butts.jpg) no-repeat;
+    border: 10px solid white;
+}
+.imgBox2:hover {
+    width: 600px;
+    height: 480px;
+    background: url(/Berlin.jpg) no-repeat center;
+    border: 10px solid white;
+}
+.img_copyright {
+    font-size: 14px;
+    color: rgb(117, 117, 117);
 }

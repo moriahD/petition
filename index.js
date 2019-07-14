@@ -319,9 +319,11 @@ app.get("/signers", function(req, res) {
 app.get("/petition/signers/:byCity", function(req, res) {
     db.getSignersByCity(req.params.byCity)
         .then(result => {
+            var city = req.params.byCity;
             var signers = result.rows;
             res.render("city", {
-                signers: signers
+                signers: signers,
+                city: city
             });
         })
         .catch(err => {

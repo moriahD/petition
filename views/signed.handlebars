@@ -1,12 +1,20 @@
 {{> nav }}
 
+<div class="wrap_alignLeft">
+    <p class="birdTalk">"Your signature looks great! You made us happy!"</p>
 
-<p class="birdTalk">"Your signature looks great! I like it!"</p>
-<p class="birdTalk">"We are super happy for your support!"</p>
-<img src="{{imgUrl}}" alt="users signature">
+    <img src="{{imgUrl}}" alt="users signature">
 
-<form method="POST">
-    <input type="hidden" name="delete" value="">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}"><!-- fixme: don't put a session id as a form value, easily hackable by users -->
-    <button name="delete" class="btn" value="{{req.session.userId}}" id="delete_btn">{{delete}}</button>
-</form>
+    <form method="POST">
+        <input type="hidden" name="delete" value="">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}"><!-- fixme: don't put a session id as a form value, easily hackable by users -->
+        <button name="delete" class="btn" value="{{req.session.userId}}" id="delete_btn">{{delete}}</button>
+    </form>
+</div>
+<div class="wrap_right">
+    <div class="imgBox">
+    </div>
+    <p class="img_copyright">© cat from [puamelia]@flickr </p>
+
+</div>
+{{>footer}}
