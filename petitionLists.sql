@@ -22,7 +22,7 @@ CREATE TABLE profile(
     age INT,
     city VARCHAR(100),
     url VARCHAR(300),
-    user_id INT NOT NULL,
+    user_id INT UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 );

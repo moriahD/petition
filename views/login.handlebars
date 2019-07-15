@@ -1,11 +1,17 @@
-<p></p>
+<p class="subpage_title">If you don't pick it up, they will pick it up.</p>
+<div class="login_wrap">
+<img src="/bird-cig-butt.jpg" alt="">
 <form method="POST">
-    <input type="text" name="email" placeholder="Your Email" required />
-    <input type="password" name="password" placeholder="Password" required/>
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+        <input type="text" name="email" placeholder="Your Email" required />
+        <input type="password" name="password" placeholder="Password" required/>
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+
 
 <button name="login_btn" class="btn">LOG IN</button>
 </form>
+</div>
 <p class="err_login">{{error}}</p>
 
 {{>footer}}

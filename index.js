@@ -228,7 +228,11 @@ app.post("/profile/edit", (req, res) => {
                     req.body.city,
                     req.body.url,
                     req.session.userId
-                ).then(res.redirect("/signed"));
+                )
+                    .then(res.redirect("/signed"))
+                    .catch(err => {
+                        console.log("err in edit profile:", err);
+                    });
             })
             .catch(err => {
                 console.log("err in edit profile:", err);

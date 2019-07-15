@@ -118,6 +118,15 @@ input {
     height: 30px;
     opacity: 0.7;
 }
+.login_wrap img {
+    border: 10px solid #fff;
+    max-width: 600px;
+}
+.login_wrap input[type="text"],
+.login_wrap input[type="password"] {
+    width: 240px;
+    opacity: 1;
+}
 input[type="text"]:focus,
 input[type="password"]:focus {
     color: #0aefa1;
